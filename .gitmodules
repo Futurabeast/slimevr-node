@@ -1,0 +1,3 @@
+[submodule "packages/solarxr-protocol"]
+	path = packages/solarxr-protocol
+	url = git@github.com:SlimeVR/SolarXR-Protocol.git

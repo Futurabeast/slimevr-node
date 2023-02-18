@@ -1,7 +1,9 @@
+import { TrackerIdT } from 'solarxr-protocol';
 import { DeviceContext } from './device/device';
-import { Context, ContextReducer, createContext } from './events';
+import { Context, ContextReducer, createContext, DeepReadonly } from './events';
 import { UDPConnectionContext } from './input-servers/udp-tracker-server/udp-connection';
 import { SolarXRConnectionContext } from './output-servers/solarxr-protocol/solarxr-connection';
+import { SerialConnectionContext } from './serial/serial-context';
 import { TrackerContext } from './tracker/tracker';
 
 export type ID = number;
@@ -11,6 +13,7 @@ export type RootContextState = {
   trackers: Record<ID, TrackerContext>;
   devices: Record<ID, DeviceContext>;
   solarXRConnections: Record<number, SolarXRConnectionContext>;
+  serialConnections: Record<string, SerialConnectionContext>;
   handleId: ID;
 };
 
@@ -19,6 +22,8 @@ export type RootContextActions =
   | { type: 'udp/remove-connection'; id: string }
   | { type: 'solarxr/new-connection'; id: number; context: SolarXRConnectionContext }
   | { type: 'solarxr/remove-connection'; id: number }
+  | { type: 'serial/new-device'; port: string; context: SerialConnectionContext }
+  | { type: 'serial/remove-device'; port: string }
   | { type: 'server/new-tracker'; id: ID; context: TrackerContext }
   | { type: 'server/new-device'; id: ID; context: DeviceContext };
 
@@ -28,6 +33,7 @@ export type RootContextEvents = {
 
 export type RootContextContext = Context<RootContextState, RootContextActions, RootContextEvents> & {
   nextHandleId: () => ID;
+  getTrackerContext: (trackerId: TrackerIdT | null) => DeepReadonly<TrackerContext> | null;
 };
 
 const contextReducer: ContextReducer<RootContextState, RootContextActions> = async (state, action) => {
@@ -93,6 +99,16 @@ const contextReducer: ContextReducer<RootContextState, RootContextActions> = asy
  * it holds references to other context
  *
  * like udp connections states, tracker state, and device state
+ *
+ * NOTE on this section
+ * the more we add code the more i think this might need to change
+ * because it creates uncessary complexity
+ * also i realized that root context does not require any event emitter
+ * and all the actions aside of the handle only handle creation of new state
+ * having a list of context event tho it does not use the immuatable pattern might be
+ * better and allow to pick what context you need for what input/output server
+ * kinda like the config context is rn
+ *
  */
 export function createRootContext(): RootContextContext {
   const state = createContext<RootContextState, RootContextActions, RootContextEvents>({
@@ -102,6 +118,7 @@ export function createRootContext(): RootContextContext {
       trackers: {},
       devices: {},
       solarXRConnections: {},
+      serialConnections: {},
       handleId: 0
     },
     stateReducer: contextReducer
@@ -113,6 +130,16 @@ export function createRootContext(): RootContextContext {
       const { handleId } = state.getState();
 
       return handleId + 1;
+    },
+    getTrackerContext: (trackerId) => {
+      if (!trackerId?.deviceId) return null;
+
+      const { trackers } = state.getState();
+
+      const tracker = trackers[trackerId.trackerNum];
+      if (!tracker) return null;
+
+      return tracker;
     }
   };
 }

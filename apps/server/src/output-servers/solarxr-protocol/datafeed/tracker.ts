@@ -11,7 +11,7 @@ export function createDatafeedTracker(
   const trackerData = new TrackerDataT();
 
   const trackerId = new TrackerIdT();
-  trackerId.trackerNum = tracker.id.trackerNum;
+  trackerId.trackerNum = tracker.id.id;
   if (tracker.deviceId) {
     const deviceId = new DeviceIdT();
     deviceId.id = tracker.deviceId;
@@ -20,7 +20,7 @@ export function createDatafeedTracker(
   trackerData.trackerId = trackerId;
 
   if (mask.rotation) {
-    const rot = new QuatT(tracker.rotation.x, tracker.rotation.y, tracker.rotation.z, 1);
+    const rot = new QuatT(tracker.rotation.x, tracker.rotation.y, tracker.rotation.z, tracker.rotation.w);
     trackerData.rotation = rot;
   }
 
@@ -28,10 +28,10 @@ export function createDatafeedTracker(
 
   if (mask.info) {
     const trackerInfo = new TrackerInfoT();
-
     if (tracker.infos?.sensorType) {
       trackerInfo.imuType = tracker.infos?.sensorType;
     }
+    trackerInfo.bodyPart = tracker.bodyPart;
     trackerData.info = trackerInfo;
   }
 

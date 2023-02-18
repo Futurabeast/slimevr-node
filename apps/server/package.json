@@ -21,6 +21,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@ros2jsguy/three-math-ts": "^0.143.1",
     "@slimevr/common": "*",
     "@slimevr/firmware-protocol": "*",
     "@slimevr/firmware-protocol-debugger-shared": "*",

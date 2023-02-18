@@ -1,3 +1,4 @@
+import { Euler, Quaternion } from '@ros2jsguy/three-math-ts';
 import logger from '../../../logger';
 import { PacketType } from '../packet-builders';
 import { UDPConnectionModule } from '../udp-connection';
@@ -18,7 +19,10 @@ export const UDPSensorRotationModule: UDPConnectionModule = {
     udpContext.events.on(PacketType.PACKET_ROTATION_DATA, ({ sensorId, rotation }) => {
       const tracker = udpContext.getTrackerContext(sensorId, rootContext);
       if (!tracker) return;
-      tracker.dispatch({ type: 'tracker/set-rotation', rotation: { ...rotation, w: 0 } });
+      tracker.dispatch({
+        type: 'tracker/set-rotation',
+        rotation: new Quaternion().setFromEuler(new Euler(rotation.x, rotation.y, rotation.z))
+      });
     });
   }
 };

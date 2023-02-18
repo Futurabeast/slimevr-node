@@ -59,8 +59,8 @@ export const init = ({
     } else {
       log.info({ address: rinfo.address }, 'new connection');
       const udpState = createUdpConnectionContext({ id: rinfo.address, socket, rootContext, rinfo, configContext });
-      rootContext.dispatch({ type: 'udp/new-connection', id: rinfo.address, context: udpState });
       udpState.events.once('udp-connection:update', () => {
+        rootContext.dispatch({ type: 'udp/new-connection', id: rinfo.address, context: udpState });
         udpState.events.emit('udp-connection:new-packet', id, packetNumber, data, rinfo);
       });
     }

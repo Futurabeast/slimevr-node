@@ -5,6 +5,7 @@ import { Context, ContextReducer, createContext } from '../events';
 import { TrackerInfosModule } from './infos';
 import { TrackerLinkDeviceModule } from './link-device';
 import { TrackerRotationModule } from './rotation';
+import { TrackerSettingsModule } from './tracker-settings';
 
 export type TrackerIdNum = { id: ID; trackerNum: number };
 export type TrackerInfos = {
@@ -27,14 +28,20 @@ export type TrackerState = {
 export type TrackerActions =
   | { type: 'tracker/link-device'; deviceId: ID }
   | { type: 'tracker/set-infos'; infos: Partial<TrackerInfos> }
-  | { type: 'tracker/set-rotation'; rotation: Rotation };
+  | { type: 'tracker/set-rotation'; rotation: Rotation }
+  | {
+      type: 'tracker/change-settings';
+      bodyPart: BodyPart | BodyPart.NONE;
+      displayName?: string;
+      allowDriftCompensation?: boolean;
+    };
 
 export type TrackerEvents = {
   'tracker:update': (state: TrackerState) => void;
 };
 
 export type TrackerContext = Context<TrackerState, TrackerActions, TrackerEvents> & {
-  saveTracker: (deviceHardwareAddress?: string) => void;
+  saveTracker: () => void;
 };
 
 export type TrackerModule = {
@@ -42,7 +49,12 @@ export type TrackerModule = {
   reduce?: ContextReducer<TrackerState, TrackerActions>;
 };
 
-const modules: TrackerModule[] = [TrackerInfosModule, TrackerRotationModule, TrackerLinkDeviceModule];
+const modules: TrackerModule[] = [
+  TrackerInfosModule,
+  TrackerRotationModule,
+  TrackerLinkDeviceModule,
+  TrackerSettingsModule
+];
 
 function loadTrackerConfig(configContext: ConfigContext, id: TrackerIdNum, hardwareId: string): TrackerState {
   const { trackers } = configContext.getState();

@@ -25,6 +25,8 @@
   },
   "packageManager": "npm@8.5.0",
   "dependencies": {
-    "abortable-iterator": "^4.0.2"
+    "abortable-iterator": "^4.0.2",
+    "fast-array-diff": "^1.0.1",
+    "serialport": "^10.5.0"
   }
 }

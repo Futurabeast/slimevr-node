@@ -36,7 +36,7 @@ export type Context<S, A, E> = {
    * A way of triggering actions
    * An action is an object telling the context reducer how to mutate the current state
    */
-  dispatch: (action: A) => void;
+  dispatch: (action: A, callback?: () => void) => void;
 
   /**
    * Cancel all abortable events and actions
@@ -111,8 +111,12 @@ export function createContext<S, A, E>({
     events: events as StrictEventEmitter<EventEmitter, E>,
     signal: controller.signal,
     getState,
-    dispatch(action: A) {
-      actions.write(action);
+    dispatch(action: A, cb) {
+      if (!actions.write(action)) {
+        actions.once('drain', () => cb && cb());
+      } else {
+        process.nextTick(() => cb && cb());
+      }
     },
     destroy() {
       actions.end();

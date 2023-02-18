@@ -46,6 +46,9 @@ export function init({ rootContext }: { rootContext: RootContextContext; configC
         message.dataFeedMsgs.forEach((header) => {
           solarXRState.datafeedEvents.emit(header.messageType as number, header.message);
         });
+        message.rpcMsgs.forEach((header) => {
+          solarXRState.rpcEvents.emit(header.messageType as number, header.message);
+        });
       });
 
       return {

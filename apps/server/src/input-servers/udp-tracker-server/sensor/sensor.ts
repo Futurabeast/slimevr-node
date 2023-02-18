@@ -44,22 +44,18 @@ export const UDPSensorModule: UDPConnectionModule = {
           rootContext,
           configContext
         });
-        rootContext.dispatch({
-          type: 'server/new-tracker',
-          id: trackerId,
-          context: newTrackerContext
-        });
         newTrackerContext.events.once('tracker:update', () => {
+          rootContext.dispatch({
+            type: 'server/new-tracker',
+            id: trackerId,
+            context: newTrackerContext
+          });
           udpContext.dispatch({ type: 'udp/assign-tracker', trackerId: { id: trackerId, trackerNum: sensorId } });
           newTrackerContext.dispatch(statusUpdatePayload);
-
-          if (deviceContext == null) return;
-
           newTrackerContext.dispatch({
             type: 'tracker/link-device',
             deviceId: deviceState.id
           });
-          newTrackerContext.saveTracker();
         });
       }
     });

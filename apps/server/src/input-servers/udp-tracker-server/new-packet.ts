@@ -54,16 +54,17 @@ export const UDPNewPacketModule: UDPConnectionModule = {
                 : handshakeData.macString,
             rootContext
           });
-          rootContext.dispatch({
-            type: 'server/new-device',
-            id: deviceId,
-            context: newDeviceContext
-          });
-
-          rootContext.events.once('context:update', () => {
-            udpContext.dispatch({ type: 'udp/handshook', deviceId });
-            udpContext.sendPacket(PacketHandshakeBuilder, BigInt(0), {} as never);
-          });
+          rootContext.dispatch(
+            {
+              type: 'server/new-device',
+              id: deviceId,
+              context: newDeviceContext
+            },
+            () => {
+              udpContext.dispatch({ type: 'udp/handshook', deviceId });
+              udpContext.sendPacket(PacketHandshakeBuilder, BigInt(0), {} as never);
+            }
+          );
         } else {
           udpContext.sendPacket(PacketHandshakeBuilder, BigInt(0), {} as never);
         }

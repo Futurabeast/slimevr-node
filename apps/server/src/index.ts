@@ -3,11 +3,13 @@ import { createRootContext } from './context.js';
 import { init as initUDPTrackerInputServer } from './input-servers/udp-tracker-server/server';
 import { init as initSolarXROutputServer } from './output-servers/solarxr-protocol/server';
 import { observePerformances } from './performance.js';
+import { initSerialWatcher } from './serial/serial.js';
 
 (async function init() {
   const configContext = await createConfigContext(); // Should the config context be inside the root context ?
   const rootContext = createRootContext();
 
+  initSerialWatcher({ rootContext });
   initUDPTrackerInputServer({ rootContext, configContext });
   initSolarXROutputServer({ rootContext, configContext });
   observePerformances();

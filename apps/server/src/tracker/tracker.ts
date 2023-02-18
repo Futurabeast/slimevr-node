@@ -8,26 +8,23 @@ import { TrackerRotationModule } from './rotation';
 import { TrackerSettingsModule } from './tracker-settings';
 
 export type TrackerIdNum = { id: ID; trackerNum: number };
-export type TrackerInfos = {
-  sensorType: ImuType;
-  status: TrackerStatus;
-};
-
 export type Rotation = { x: number; y: number; z: number; w: number };
 
 export type TrackerState = {
   id: TrackerIdNum;
   hardwareId: string;
   name: string;
-  infos?: Partial<TrackerInfos>;
+  sensorType?: ImuType;
+  status: TrackerStatus;
   rotation: Rotation;
   bodyPart: BodyPart;
+  customeName?: string;
   deviceId?: ID;
 };
 
 export type TrackerActions =
   | { type: 'tracker/link-device'; deviceId: ID }
-  | { type: 'tracker/set-infos'; infos: Partial<TrackerInfos> }
+  | { type: 'tracker/set-infos'; status?: TrackerStatus; sensorType?: ImuType }
   | { type: 'tracker/set-rotation'; rotation: Rotation }
   | {
       type: 'tracker/change-settings';
@@ -68,6 +65,7 @@ function loadTrackerConfig(configContext: ConfigContext, id: TrackerIdNum, hardw
     hardwareId,
     name: `Tracker #${id.id}`, // use a mock library to give tracker funny names
     rotation: { x: 0, y: 0, z: 0, w: 1 },
+    status: TrackerStatus.NONE,
     bodyPart: trackerConfig?.bodyPart || BodyPart.NONE
   };
 }
@@ -86,10 +84,10 @@ export async function createTrackerContext({
   const context = createContext<TrackerState, TrackerActions, TrackerEvents>({
     initialState: loadTrackerConfig(configContext, id, hardwareId),
     stateEvent: 'tracker:update',
-    stateReducer: async (state, action) =>
-      modules.reduce<Promise<TrackerState>>(
-        async (intermediate, { reduce }) => (reduce ? reduce(await intermediate, action) : intermediate),
-        new Promise((res) => res(state))
+    stateReducer: (state, action) =>
+      modules.reduce<TrackerState>(
+        (intermediate, { reduce }) => (reduce ? reduce(intermediate, action) : intermediate),
+        state
       )
   });
 

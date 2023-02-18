@@ -24,12 +24,12 @@ export function createDatafeedTracker(
     trackerData.rotation = rot;
   }
 
-  if (mask.status && tracker.infos?.status) trackerData.status = tracker.infos?.status;
+  if (mask.status) trackerData.status = tracker.status;
 
   if (mask.info) {
     const trackerInfo = new TrackerInfoT();
-    if (tracker.infos?.sensorType) {
-      trackerInfo.imuType = tracker.infos?.sensorType;
+    if (tracker?.sensorType) {
+      trackerInfo.imuType = tracker.sensorType;
     }
     trackerInfo.bodyPart = tracker.bodyPart;
     trackerData.info = trackerInfo;

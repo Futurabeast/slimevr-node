@@ -25,7 +25,8 @@ export type RootContextActions =
   | { type: 'serial/new-device'; port: string; context: SerialConnectionContext }
   | { type: 'serial/remove-device'; port: string }
   | { type: 'server/new-tracker'; id: ID; context: TrackerContext }
-  | { type: 'server/new-device'; id: ID; context: DeviceContext };
+  | { type: 'server/new-device'; id: ID; context: DeviceContext }
+  | { type: 'server/set-wifi-provisioning-settings'; port?: string; password?: string; ssid: string };
 
 export type RootContextEvents = {
   'context:update': (context: RootContextState) => void;
@@ -36,7 +37,7 @@ export type RootContextContext = Context<RootContextState, RootContextActions, R
   getTrackerContext: (trackerId: TrackerIdT | null) => DeepReadonly<TrackerContext> | null;
 };
 
-const contextReducer: ContextReducer<RootContextState, RootContextActions> = async (state, action) => {
+const contextReducer: ContextReducer<RootContextState, RootContextActions> = (state, action) => {
   if (action.type === 'udp/new-connection') {
     return {
       ...state,

@@ -45,7 +45,7 @@ function constructDatafeed({
 }
 
 export const StartDataFeedSolarXRModule: SolarXRConnectionModule = {
-  async reduce(state, action) {
+  reduce(state, action) {
     if (action.type === 'solarxr/datafeed/set-config') {
       return {
         ...state,

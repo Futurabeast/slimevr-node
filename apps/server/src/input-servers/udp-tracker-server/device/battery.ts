@@ -5,7 +5,7 @@ import { UDPConnectionModule } from '../udp-connection';
 const log = logger(__filename);
 
 export const UDPDeviceBatteryModule: UDPConnectionModule = {
-  async reduce(state) {
+  reduce(state) {
     return state;
   },
   observe({ udpContext, rootContext }) {

@@ -49,7 +49,7 @@ export type Context<S, A, E> = {
  * A function that mutate the state based on the action you provide
  * This function should return the mutated state, or the same state if it didnt change
  */
-export type ContextReducer<S, A> = (state: DeepReadonly<S>, action: A) => Promise<S>;
+export type ContextReducer<S, A> = (state: DeepReadonly<S>, action: A) => S;
 
 export type ContextProps<S, A, E> = {
   /**
@@ -90,9 +90,9 @@ export function createContext<S, A, E>({
   const events = new EventEmitter();
   events.setMaxListeners(Infinity);
 
-  aiter(actions).reduce(async (lastState, action) => {
+  aiter(actions).reduce((lastState, action) => {
     performance.mark('context_reduce_start', { detail: action.type });
-    const state = await stateReducer(lastState, action);
+    const state = stateReducer(lastState, action);
     performance.mark('context_reduce_end', { detail: action.type });
     performance.measure('context_reduce', {
       detail: action.type,

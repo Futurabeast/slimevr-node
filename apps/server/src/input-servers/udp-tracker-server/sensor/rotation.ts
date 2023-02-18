@@ -6,7 +6,7 @@ import { UDPConnectionModule } from '../udp-connection';
 const log = logger(__filename);
 
 export const UDPSensorRotationModule: UDPConnectionModule = {
-  async reduce(state, action) {
+  reduce(state, action) {
     return state;
   },
   observe({ udpContext, rootContext }) {

@@ -65,10 +65,10 @@ export async function createConfigContext(): Promise<ConfigContext> {
   const context = createContext<ConfigState, ConfigActions, ConfigEvents>({
     initialState: await loadConfigFile(),
     stateEvent: 'config:update',
-    stateReducer: async (state, action) =>
-      modules.reduce<Promise<ConfigState>>(
-        async (intermediate, { reduce }) => (reduce ? reduce(await intermediate, action) : intermediate),
-        new Promise((res) => res(state))
+    stateReducer: (state, action) =>
+      modules.reduce<ConfigState>(
+        (intermediate, { reduce }) => (reduce ? reduce(intermediate, action) : intermediate),
+        state
       )
   });
 

@@ -1,7 +1,7 @@
 import { TrackerModule } from './tracker';
 
 export const TrackerLinkDeviceModule: TrackerModule = {
-  async reduce(state, action) {
+  reduce(state, action) {
     if (action.type === 'tracker/link-device') {
       return {
         ...state,

@@ -4,7 +4,7 @@ import { PacketType } from '../packet-builders';
 import { UDPConnectionModule } from '../udp-connection';
 
 export const UDPSensorModule: UDPConnectionModule = {
-  async reduce(state, action) {
+  reduce(state, action) {
     if (action.type === 'udp/assign-tracker') {
       return {
         ...state,
@@ -20,10 +20,8 @@ export const UDPSensorModule: UDPConnectionModule = {
 
       const statusUpdatePayload: TrackerActions = {
         type: 'tracker/set-infos',
-        infos: {
-          sensorType,
-          status: sensorStatus
-        }
+        sensorType,
+        status: sensorStatus
       };
 
       // If we already have a tracker context we just update the status and sensor type

@@ -6,7 +6,7 @@ import { UDPConnectionModule } from './udp-connection';
 const log = logger(__filename);
 
 export const UDPNewPacketModule: UDPConnectionModule = {
-  async reduce(state, action) {
+  reduce(state, action) {
     if (action.type === 'udp/update-last-packet') {
       return {
         ...state,

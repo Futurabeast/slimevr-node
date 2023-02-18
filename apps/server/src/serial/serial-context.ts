@@ -39,10 +39,10 @@ export async function createSerialConnectionContext({
       port
     },
     stateEvent: 'serial:update',
-    stateReducer: async (state, action) =>
-      modules.reduce<Promise<SerialConnectionState>>(
-        async (intermediate, { reduce }) => (reduce ? reduce(await intermediate, action) : intermediate),
-        new Promise((res) => res(state))
+    stateReducer: (state, action) =>
+      modules.reduce<SerialConnectionState>(
+        (intermediate, { reduce }) => (reduce ? reduce(intermediate, action) : intermediate),
+        state
       )
   });
 

@@ -8,7 +8,7 @@ import { UDPConnectionModule } from './udp-connection';
 const log = logger(__filename);
 
 export const UDPPingModule: UDPConnectionModule = {
-  async reduce(state, action) {
+  reduce(state, action) {
     if (action.type === 'udp/start-ping') {
       return {
         ...state,

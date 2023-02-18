@@ -5,7 +5,9 @@ import {
   DataFeedUpdateT,
   PollDataFeedT,
   RpcMessage,
-  StartDataFeedT
+  StartDataFeedT,
+  StartWifiProvisioningRequestT,
+  StopWifiProvisioningRquestT
 } from 'solarxr-protocol';
 import { EventEmitter } from 'stream';
 import StrictEventEmitter from 'strict-event-emitter-types/types/src/index';
@@ -36,6 +38,8 @@ export type DataFeedMessageMapping = {
 
 export type RpcMessageMapping = {
   [RpcMessage.AssignTrackerRequest]: AssignTrackerRequestT;
+  [RpcMessage.StartWifiProvisioningRequest]: StartWifiProvisioningRequestT;
+  [RpcMessage.StopWifiProvisioningRquest]: StopWifiProvisioningRquestT;
 };
 
 export type SolarXRConnectionEvents = {
@@ -77,10 +81,10 @@ export function createSolarXRConnectionContext({
       datafeedTimers: []
     },
     stateEvent: 'solarxr-connection:update',
-    stateReducer: async (state, action) =>
-      modules.reduce<Promise<SolarXRConnectionState>>(
-        async (intermediate, { reduce }) => (reduce ? reduce(await intermediate, action) : intermediate),
-        new Promise((res) => res(state))
+    stateReducer: (state, action) =>
+      modules.reduce<SolarXRConnectionState>(
+        (intermediate, { reduce }) => (reduce ? reduce(intermediate, action) : intermediate),
+        state
       )
   });
 

@@ -4,10 +4,7 @@ import { aiter } from 'iterator-helper';
 import { SerialPort } from 'serialport';
 import { setInterval } from 'timers/promises';
 import { RootContextContext } from '../context';
-import logger from '../logger';
 import { createSerialConnectionContext } from './serial-context';
-
-const logs = logger(__filename);
 
 // The lib type deffinition is wrong!!!!! i made an issue we will see how it goes
 //https://github.com/serialport/node-serialport/issues/2600

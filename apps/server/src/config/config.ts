@@ -38,6 +38,7 @@ const modules: ConfigModule[] = [TrackerConfigModule];
 
 const SLIME_FOLDER = join(homedir(), 'SlimeVR');
 const SLIME_CONFIG_FILE = join(SLIME_FOLDER, 'config.json');
+const SLIME_CONFIG_BAK_FILE = join(SLIME_FOLDER, 'config.json.bak');
 
 const INITIAL_CONFIG_STATE = {
   version: 1,
@@ -49,8 +50,18 @@ const loadConfigFile = async (): Promise<ConfigState> => {
   if (!content) {
     return INITIAL_CONFIG_STATE;
   }
-  logs.info('Loading config file');
-  return JSON.parse(content.toString());
+  try {
+    logs.info('Loading config file');
+    return JSON.parse(content.toString());
+  } catch (e) {
+    try {
+      await fs.copyFile(SLIME_CONFIG_FILE, SLIME_CONFIG_BAK_FILE);
+    } catch (e) {
+      logs.error({ path: SLIME_CONFIG_BAK_FILE }, 'unable to copy file to');
+    }
+    logs.error('unable to open config file, reseting to default values');
+    return INITIAL_CONFIG_STATE;
+  }
 };
 
 const saveConfigFile = async (config: ConfigState) => {

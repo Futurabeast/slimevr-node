@@ -23,6 +23,7 @@
   "dependencies": {
     "@ros2jsguy/three-math-ts": "^0.143.1",
     "@slimevr/common": "*",
+    "@slimevr/driver-protobuf-messages": "*",
     "@slimevr/firmware-protocol": "*",
     "@slimevr/firmware-protocol-debugger-shared": "*",
     "@slimevr/firmware-protocol-debugger-utils": "*",
@@ -32,6 +33,7 @@
     "iterator-helper": "^1.3.4",
     "npm": "^9.4.2",
     "pino": "^8.8.0",
+    "protobufjs": "^7.2.2",
     "solarxr-protocol": "*",
     "strict-event-emitter-types": "^2.0.0",
     "ws": "^8.12.0"

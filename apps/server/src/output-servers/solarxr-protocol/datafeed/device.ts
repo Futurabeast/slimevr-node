@@ -28,6 +28,8 @@ export function createDatafeedDevice(
     const hardwareStatus = new HardwareStatusT();
     hardwareStatus.batteryPctEstimate = device.battery.level * 100;
     hardwareStatus.batteryVoltage = device.battery.voltage;
+    if (device.ping) hardwareStatus.ping = device.ping;
+    if (device.signalStrength) hardwareStatus.rssi = device.signalStrength;
     deviceData.hardwareStatus = hardwareStatus;
 
     const deviceId = new DeviceIdT();

@@ -1,4 +1,3 @@
-import { TrackerIdT } from 'solarxr-protocol';
 import { DeviceContext } from './device/device';
 import { Context, ContextReducer, createContext, DeepReadonly } from './events';
 import { UDPConnectionContext } from './input-servers/udp-tracker-server/udp-connection';
@@ -34,7 +33,8 @@ export type RootContextEvents = {
 
 export type RootContextContext = Context<RootContextState, RootContextActions, RootContextEvents> & {
   nextHandleId: () => ID;
-  getTrackerContext: (trackerId: TrackerIdT | null) => DeepReadonly<TrackerContext> | null;
+  getTrackerContext: (trackerId?: number) => DeepReadonly<TrackerContext> | null;
+  getDeviceContext: (deviceId?: number) => DeepReadonly<DeviceContext> | null;
 };
 
 const contextReducer: ContextReducer<RootContextState, RootContextActions> = (state, action) => {
@@ -133,14 +133,24 @@ export function createRootContext(): RootContextContext {
       return handleId + 1;
     },
     getTrackerContext: (trackerId) => {
-      if (!trackerId?.deviceId) return null;
+      if (!trackerId) return null;
 
       const { trackers } = state.getState();
 
-      const tracker = trackers[trackerId.trackerNum];
+      const tracker = trackers[trackerId];
       if (!tracker) return null;
 
       return tracker;
+    },
+    getDeviceContext: (deviceId) => {
+      if (!deviceId) return null;
+
+      const { devices } = state.getState();
+
+      const device = devices[deviceId];
+      if (!device) return null;
+
+      return device;
     }
   };
 }

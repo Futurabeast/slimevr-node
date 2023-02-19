@@ -5,8 +5,8 @@ export const TrackerInfosModule: TrackerModule = {
     if (action.type === 'tracker/set-infos') {
       return {
         ...state,
-        sensorType: action.sensorType || state.sensorType,
-        status: action.status || state.status
+        sensorType: action.sensorType !== undefined ? action.sensorType : state.sensorType,
+        status: action.status !== undefined ? action.status : state.status
       };
     }
     return state;

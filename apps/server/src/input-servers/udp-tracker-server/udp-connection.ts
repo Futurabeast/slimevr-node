@@ -5,6 +5,7 @@ import { DeviceContext } from '../../device/device';
 import { Context, ContextReducer, createContext } from '../../events';
 import { TrackerContext, TrackerIdNum } from '../../tracker/tracker';
 import { UDPDeviceBatteryModule } from './device/battery';
+import { UDPDeviceSignalStrengthModule } from './device/signal-stength';
 import { UDPNewPacketModule } from './new-packet';
 import { InboundPackets, PacketBuilder, PacketReturnType, PacketType, writePacket } from './packet-builders';
 import { UDPPingModule } from './ping';
@@ -72,6 +73,7 @@ export type UDPConnectionModule = {
 const modules: UDPConnectionModule[] = [
   UDPNewPacketModule,
   UDPPingModule,
+  UDPDeviceSignalStrengthModule,
   UDPSensorModule,
   UDPSensorRotationModule,
   UDPDeviceBatteryModule
@@ -106,11 +108,8 @@ export function createUdpConnectionContext({
       trackerIds: []
     },
     stateEvent: 'udp-connection:update',
-    stateReducer: async (state, action) =>
-      modules.reduce<Promise<UDPConnectionState>>(
-        async (intermediate, { reduce }) => reduce(await intermediate, action),
-        new Promise((res) => res(state))
-      )
+    stateReducer: (state, action) =>
+      modules.reduce<UDPConnectionState>((intermediate, { reduce }) => reduce(intermediate, action), state)
   });
 
   const udpContext: UDPConnectionContext = {

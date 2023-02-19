@@ -1,4 +1,4 @@
-import { DeviceIdT, QuatT, TrackerDataMaskT, TrackerDataT, TrackerIdT, TrackerInfoT } from 'solarxr-protocol';
+import { DeviceIdT, QuatT, TrackerDataMaskT, TrackerDataT, TrackerIdT, TrackerInfoT, Vec3fT } from 'solarxr-protocol';
 import { DeviceState } from '../../../device/device';
 import { DeepReadonly } from '../../../events';
 import { TrackerState } from '../../../tracker/tracker';
@@ -11,7 +11,7 @@ export function createDatafeedTracker(
   const trackerData = new TrackerDataT();
 
   const trackerId = new TrackerIdT();
-  trackerId.trackerNum = tracker.id.id;
+  trackerId.trackerNum = tracker.id;
   if (tracker.deviceId) {
     const deviceId = new DeviceIdT();
     deviceId.id = tracker.deviceId;
@@ -22,6 +22,10 @@ export function createDatafeedTracker(
   if (mask.rotation) {
     const rot = new QuatT(tracker.rotation.x, tracker.rotation.y, tracker.rotation.z, tracker.rotation.w);
     trackerData.rotation = rot;
+  }
+
+  if (mask.position && tracker.position) {
+    trackerData.position = new Vec3fT(tracker.position.x, tracker.position.y, tracker.position.z);
   }
 
   if (mask.status) trackerData.status = tracker.status;

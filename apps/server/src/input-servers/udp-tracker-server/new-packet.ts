@@ -42,7 +42,6 @@ export const UDPNewPacketModule: UDPConnectionModule = {
 
       if (id === PacketType.PACKET_HANDSHAKE) {
         const handshakeData = packet as PacketHandshake;
-
         if (!deviceId) {
           const deviceId = rootContext.nextHandleId();
           const newDeviceContext = await createDeviceContext({
@@ -52,7 +51,8 @@ export const UDPNewPacketModule: UDPConnectionModule = {
               handshakeData.macString === '00:00:00:00:00:00'
                 ? `${rinfo.address}:${rinfo.port}`
                 : handshakeData.macString,
-            rootContext
+            rootContext,
+            origin: 'udp'
           });
           rootContext.dispatch(
             {

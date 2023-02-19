@@ -21,7 +21,7 @@ export const UDPSensorModule: UDPConnectionModule = {
       const statusUpdatePayload: TrackerActions = {
         type: 'tracker/set-infos',
         sensorType,
-        status: sensorStatus
+        status: sensorStatus + 1
       };
 
       // If we already have a tracker context we just update the status and sensor type
@@ -37,10 +37,11 @@ export const UDPSensorModule: UDPConnectionModule = {
         // If we dont have one we create a new context then send the status and sensor type
         const trackerId = rootContext.nextHandleId();
         const newTrackerContext = await createTrackerContext({
-          id: { id: trackerId, trackerNum: sensorId },
+          id: trackerId,
           hardwareId: hardwareId(deviceState.hardwareAddress, sensorId),
           rootContext,
-          configContext
+          configContext,
+          origin: 'udp'
         });
         newTrackerContext.events.once('tracker:update', () => {
           rootContext.dispatch({

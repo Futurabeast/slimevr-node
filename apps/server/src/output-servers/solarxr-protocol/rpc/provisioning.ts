@@ -13,17 +13,12 @@ export const RpcProvisioningXRModule: SolarXRConnectionModule = {
         logs.info('Start provisioning');
         if (!ssid) return;
 
-        rootContext.dispatch(
-          {
-            type: 'server/set-wifi-provisioning-settings',
-            port: port?.toString(),
-            password: password?.toString(),
-            ssid: ssid.toString()
-          },
-          () => {
-            const state = rootContext.getState();
-          }
-        );
+        rootContext.dispatch({
+          type: 'server/set-wifi-provisioning-settings',
+          port: port?.toString(),
+          password: password?.toString(),
+          ssid: ssid.toString()
+        });
       }
     );
 

@@ -47,16 +47,18 @@ export type PacketHandshake = Packet<{
 export const PacketHandshakeBuilder: PacketBuilder<PacketType.PACKET_HANDSHAKE, PacketHandshake, void> = {
   id: PacketType.PACKET_HANDSHAKE,
   writeSize: 14,
-  read: (buff) => ({
-    boardType: buff.readInt32BE(0),
-    imuType: buff.readInt32BE(4),
-    mcuType: buff.readInt32BE(8),
-    firmwareBuild: buff.readInt32BE(20),
-    firmware: buff.toString('ascii', 25, buff.readInt8(21)),
-    macString: Array.from(buff.subarray(26, 26 + 6))
-      .map((n) => n.toString(16).padStart(2, '0'))
-      .join(':')
-  }),
+  read: (buff) => {
+    return {
+      boardType: buff.readInt32BE(0),
+      imuType: buff.readInt32BE(4),
+      mcuType: buff.readInt32BE(8),
+      firmwareBuild: buff.readInt32BE(20),
+      firmware: buff.toString('ascii', 25, buff.readInt8(24)),
+      macString: Array.from(buff.subarray(-6))
+        .map((n) => n.toString(16).padStart(2, '0'))
+        .join(':')
+    };
+  },
   write: (buff) => {
     buff.writeUint8(PacketType.PACKET_HANDSHAKE);
     buff.write('Hey OVR =D 5', 1, 'ascii');

@@ -10,23 +10,21 @@ export const RpcAssignTrackerReqXRModule: SolarXRConnectionModule = {
   observe({ solarXRContext, rootContext }) {
     aiter(eventStream(solarXRContext.rpcEvents, RpcMessage.AssignTrackerRequest)).forEach(
       ([{ trackerId, allowDriftCompensation, displayName, bodyPosition }]) => {
-        const tracker = rootContext.getTrackerContext(trackerId);
+        const tracker = rootContext.getTrackerContext(trackerId?.trackerNum);
         if (!tracker) {
           logs.warn({ trackerId }, 'unknown tracker id');
           return;
         }
 
-        tracker.dispatch(
-          {
-            type: 'tracker/change-settings',
-            allowDriftCompensation,
-            displayName: displayName?.toString(),
-            bodyPart: bodyPosition
-          },
-          () => {
-            tracker.saveTracker();
-          }
-        );
+        tracker.dispatch({
+          type: 'tracker/change-settings',
+          allowDriftCompensation,
+          displayName: displayName?.toString(),
+          bodyPart: bodyPosition
+        });
+        tracker.events.once('tracker:update', () => {
+          tracker.saveTracker();
+        });
       }
     );
   }
